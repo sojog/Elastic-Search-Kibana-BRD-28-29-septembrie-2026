@@ -1,0 +1,433 @@
+
+GET news/_mapping
+
+GET news/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "Michelle Obama",
+      "fields": [
+        "headline",
+        "short_description",
+        "authors"
+      ]
+    }
+  }
+}
+
+# Boost search
+GET news/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "Michelle Obama",
+      "fields": [
+        "headline^2",
+        "short_description",
+        "authors"
+      ]
+    }
+  }
+}
+
+## Boolean - MUST
+GET news/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "headline": "Michelle Obama"
+          }
+        },
+        {
+          "match_phrase": {
+            "category": "POLITICS"
+
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET news/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "headline": "Michelle Obama"
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET news/_search
+{
+  "query": {
+    "bool": {
+      "must": {
+        "match_phrase": {
+          "headline": "Michelle Obama"
+         }
+        },
+       "must_not":[
+         {
+          "match": {
+            "category": "WEDDINGS"
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET news/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "headline": "Michelle Obama"
+          }
+        },
+        {
+          "match": {
+            "category": "WEDDINGS"
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET news/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+        "match_phrase": {
+          "headline": "Michelle Obama"
+          }
+         }
+        ],
+       "should":[
+         {
+          "match_phrase": {
+            "category": "BLACK VOICES"
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET news/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+        "match_phrase": {
+          "headline": "Michelle Obama"
+          }
+         }
+        ],
+       "filter":{
+          "range":{
+             "date": {
+               "gte": "2014-03-25",
+               "lte": "2016-03-25"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+# Cautarea este limitata la 10.000 de hits
+GET news/_search
+
+# Cautare in toate documentele
+GET news/_search
+{
+  "track_total_hits": true
+}
+
+#Găsiți articole despre Donald Trump în contextul NATO
+GET news/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "Donald Trump",
+            "fields": ["headline", "short_description"]
+          }
+        },
+        {
+          "multi_match": {
+            "query": "NATO",
+            "fields": ["headline", "short_description"]
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+GET news/_search
+{
+  "track_total_hits": true,
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "Donald Trump",
+            "fields": ["headline", "short_description"]
+          }
+        },
+        {
+          "multi_match": {
+            "query": "NATO",
+            "fields": ["headline", "short_description"]
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+
+GET news/_mapping
+
+# 2. Găsiți articole despre Donald Trump scrise de Lee Moran
+GET news/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "Donald Trump",
+            "fields": ["headline", "short_description"]
+          }
+        },
+        {
+          "match_phrase": {
+            "authors": "Lee Moran"
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+
+# 3. Găsiți toate articolele despre Donald Trump înainte ca el să fie președinte
+GET news/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "Donald Trump",
+            "fields": ["headline", "short_description"]
+          }
+        } 
+      ],
+      "filter": [
+        {
+          "range": {
+            "date": {
+              "lte": "2017-01-20"
+            }
+          }
+        }
+      ]
+    }
+  }  
+}
+
+
+
+# 4. Găsiți toate articolele despre Donald Trump care nu sunt în sfera politică.
+
+GET news/_mapping
+
+# Daca field-ul este keyword, se recomanda a se folosi term
+GET news/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "Donald Trump",
+            "fields": ["headline", "short_description"]
+          }
+        } 
+      ],
+      "must_not": [
+        {
+          "term": {
+            "category": {
+              "value": "POLITICS"
+            }
+          }
+        }
+      ]
+      
+    }
+  }  
+}
+# Daca field-ul este keyword, se recomanda a se folosi term
+# Chiar daca putem obtine acelasi lucru
+GET news/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "Donald Trump",
+            "fields": ["headline", "short_description"]
+          }
+        } 
+      ],
+      "must_not": [
+        {
+          "match_phrase": {
+            "category": "POLITICS"
+          }
+        }
+      ]
+      
+    }
+  }  
+}
+
+
+# 5. Toate articolele despre Michelle Obama, dar nu îl includ pe Barack
+GET news/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "Michelle Obama",
+            "fields": ["headline", "short_description"]
+          }
+        } 
+      ],
+      "must_not": [
+        {
+          "multi_match": {
+            "query": "Barack",
+            "fields": ["headline", "short_description"]
+          }
+        }
+      ]
+      
+    }
+  }  
+}
+
+get news/_search
+{
+    "query": {
+        "bool": {
+          "must" : 
+           [{"match_phrase": {"headline" : "Michelle Obama"}}],
+           "must_not" : 
+             [{"match_phrase": {"headline": "Barack"}}]
+           }          
+        }
+  }
+
+GET news/_search
+{
+    "query": {
+        "bool": {
+          "should" : 
+           [{"match_phrase": {"headline" : "Michelle Obama"}},
+           {"match_phrase": {"short_description" : "Michelle Obama"}}],
+           "must_not" : 
+             [{"match_phrase": {"headline": "Barack"}}]
+           }          
+        }
+  }
+
+
+# 6. Toate articolele care conțin cel puțin 2 surori Kardashian menționate
+GET /news/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        { "multi_match": { "query": "Kim Kardashian", "fields": ["headline", "short_description"] } },
+        { "multi_match": { "query": "Kourtney Kardashian", "fields": ["headline", "short_description"] } },
+        { "multi_match": { "query": "Khloe Kardashian", "fields": ["headline", "short_description"] } },
+        { "multi_match": { "query": "Kendall Jenner", "fields": ["headline", "short_description"] } },
+        { "multi_match": { "query": "Kylie Jenner", "fields": ["headline", "short_description"] } }
+      ],
+      "minimum_should_match": 2
+    }
+  }
+}
+
+
+# 7. Găsiți toate articolele despre încălzirea globală din ultimii 4 ani
+GET /news/_search 
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "multi_match": { "query": "global warming", "fields": ["headline", "short_description"] } }
+      ],
+      "filter": [
+        {
+          "range": {
+            "date": {
+              "gte": "2018-01-01"
+            }
+          }
+        }
+      ]
+    }
+    
+  }
+}
+
+# 8. Găsiți articolele despre rețete care conțin "chocolate" în titlu sau descriere
+GET news/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "chocolate",
+            "fields": ["headline", "short_description"]
+          }
+        } 
+      ]
+    }
+  }  
+}
