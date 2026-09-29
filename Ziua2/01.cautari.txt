@@ -1,3 +1,10 @@
+# Welcome to the Dev Tools Console!
+#
+# You can use Console to explore the Elasticsearch API. See the Elasticsearch API reference to learn more:
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/rest-apis.html
+#
+# Here are a few examples to get you started.
+
 GET _cat/indices
 
 # Stergerea 
@@ -119,6 +126,7 @@ POST vorbe/_search
     }
 }
 
+# Cautare cu fuzziness - cuvinte care au scriere apropiata
 POST vorbe/_search
 {
     "query": {
@@ -130,3 +138,65 @@ POST vorbe/_search
         }
     }
 }
+
+# Cautare cu parametri encodati
+POST vorbe/_search?q="Floriana"
+
+
+# Cautare cu mai multe cuvinte (Operatorul OR)
+POST vorbe/_search
+{
+    "query": {
+        "match": {
+          "propozitie": "are pere"
+        }
+    }
+}
+
+# Cautare cu match_phrase exact - Aici cautarea trebuie sa fie cu propozitia exacta
+POST vorbe/_search
+{
+    "query": {
+        "match_phrase": {
+          "propozitie": "are pere"
+        }
+    }
+}
+
+GET vorbe/_mapping
+
+
+GET _cat/indices
+
+
+GET sporturi/_search
+
+GET sporturi/_mapping
+
+
+GET sporturi/_search
+
+## Cautare dupa anumite valori numerice 
+GET sporturi/_search
+{
+    "query": {
+        "term": {
+          "jucatori": {
+            "value": "11"
+          }
+        }
+    }
+}
+
+
+GET sporturi/_search
+{
+    "sort": [
+      {
+        "jucatori": {
+          "order": "desc"
+        }
+      }
+    ]
+}
+
