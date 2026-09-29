@@ -1,0 +1,132 @@
+GET _cat/indices
+
+# Stergerea 
+DELETE vorbe
+
+# Creearea unui nou indice
+PUT vorbe
+
+# Verificam crearea lui
+GET _cat/indices
+
+# 
+GET vorbe
+
+# Adaugarea unui document
+POST  vorbe/_doc
+{
+    "propozitie" : "Ana are mere"
+}
+
+# Cautare documentelor
+GET vorbe/_search
+
+# Verificare setarilor indicelui
+GET vorbe
+
+# Citirea mapping-ului
+GET vorbe/_mapping
+
+
+POST  vorbe/_doc
+{
+    "propozitie" : "Ana are multe prietene"
+}
+
+
+POST  vorbe/_doc
+{
+    "propozitie" : "Florina vinde mere"
+}
+
+POST  vorbe/_doc
+{
+    "propozitie" : "Marcel merge la petrecere"
+}
+
+POST  vorbe/_doc
+{
+    "propozitie" : "Marcel vine dupa Florina si Ana"
+}
+
+# Cautarea tuturor documentelor
+POST vorbe/_search
+
+# Cautare dupa anumite criterii - marimea rezultatelor
+POST vorbe/_search
+{
+    "size": 2
+}
+
+# Cautare dupa anumite criterii - marimea rezultatelor
+POST vorbe/_search
+{
+    "query": {
+        "match": {
+          "propozitie": "Ana"
+        }
+    }
+}
+
+# Combinarea celor 2 optiuni
+POST vorbe/_search
+{
+    "size":1,
+    "query": {
+        "match": {
+          "propozitie": "Ana"
+        }
+    }
+}
+
+# Minificarea JSON-ului
+POST vorbe/_search
+{"size":1,"query":{"match":{"propozitie":"Ana"}}}
+
+
+# In cautarea textului (nu a keyword) - nu este important lowercase/uppercase
+POST vorbe/_search
+{
+    "query": {
+        "match": {
+          "propozitie": "ana"
+        }
+    }
+}
+
+# Cautare or dupa Ana sau Florina
+POST vorbe/_search
+{
+    "query": {
+        "match": {
+          "propozitie": "Ana Florina"
+        }
+    }
+}
+
+
+POST  vorbe/_doc
+{
+    "propozitie" : "Floriana are multe pere"
+}
+
+POST vorbe/_search
+{
+    "query": {
+        "match": {
+          "propozitie": "Florina"
+        }
+    }
+}
+
+POST vorbe/_search
+{
+    "query": {
+        "match": {
+           "propozitie": {
+            "query" : "Florina",
+            "fuzziness": 1
+           }
+        }
+    }
+}
