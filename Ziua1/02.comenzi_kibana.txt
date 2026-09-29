@@ -1,0 +1,56 @@
+
+
+## Printarea tuturor indicilor
+GET _cat/indices
+
+## Crearea unui nou indice
+PUT sporturi
+
+GET _cat/indices
+
+### CRUD
+
+## Create - crearea unui document
+POST sporturi/_doc/1
+{
+    "nume" : "folbal",
+    "jucatori" : 11
+}
+
+### Read - citirea unui document
+GET sporturi/_doc/1
+
+GET sporturi/_search 
+
+### Update - schimbarea unui document
+PUT sporturi/_doc/1
+{
+    "nume" : "fotbal",
+    "jucatori" : 11
+}
+
+
+
+### Bulk insert
+POST sporturi/_bulk
+{"index":{"_id":2}}
+{
+    "nume" : "handbal",
+    "jucatori" : 6
+}
+{"index":{"_id":3}}
+{
+    "nume" : "f1",
+    "jucatori" : 22
+}
+{"index":{"_id":4}}
+{
+    "nume" : "polo",
+    "jucatori" : 5
+}
+
+
+GET sporturi/_search
+
+
+
