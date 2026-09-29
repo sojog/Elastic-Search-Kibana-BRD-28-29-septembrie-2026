@@ -1,0 +1,178 @@
+
+GET tari/_mapping
+
+# Populatia totala per fiecare continent
+GET tari/_search
+{
+  "size": 0,
+  "aggs": {
+    "populatia per continent": {
+      "terms": {
+        "field": "continent",
+        "size": 10
+      },
+      "aggs": {
+        "populatia totala": {
+          "sum": {
+            "field": "population"
+          }
+        }
+      }
+    }
+  }
+}
+
+# Populatia cea mai mare din fiecare continent
+GET tari/_search 
+{
+  "size": 0,
+  "aggs": {
+    "cea mai mare populatie per continent": {
+      "terms": {
+        "field": "continent",
+        "size": 10
+      },
+      "aggs": {
+        "cea mai populata tara":  {
+          "top_hits": {
+            "size": 1,
+            "sort": [{
+              "population": {"order": "desc"}
+            }]
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+GET /tari/_search
+{
+  "size": 0,
+  "aggs": {
+    "continents": {
+      "terms": {
+        "field": "continent",
+        "size": 10
+      },
+      "aggs": {
+        "most_populated_country": {
+          "top_hits": {
+            "sort": [
+              {
+                "population": {
+                  "order": "desc"
+                }
+              }
+            ],
+            "size": 1
+          }
+        }
+      }
+    }
+  }
+}
+
+
+GET tari/_search 
+{
+  "size": 0,
+  "aggs": {
+    "cea mai mare populatie per continent": {
+      "terms": {
+        "field": "continent",
+        "size": 10
+      },
+      "aggs": {
+        "populatia medie": {
+          "avg": {
+            "field": "population"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+GET finals/_mapping
+
+#  Câte finale au fost în extra time și câte în normal time?
+GET finals/_search
+{
+  "size": 0,
+  "aggs": {
+    "extra time vs normal": {
+      "terms": {
+        "field": "winning-way"
+      }
+    }
+  }
+}
+
+# Care sunt țările în care s-au disputat finale?
+GET finals/_search
+{
+  "size": 0,
+  "aggs": {
+    "tarile in care s-au disputat finalele": {
+      "terms": {
+        "field": "final-country"
+      }
+    }
+  }
+}
+
+GET finals/_search
+{
+  "size": 0,
+  "aggs": {
+    "tarile in care s-au disputat finalele": {
+      "terms": {
+        "field": "winner"
+      }
+    }
+  }
+}
+
+GET finals/_search
+{
+  "size": 0,
+  "aggs": {
+    "tarile cu cele mai multe finale": {
+      "terms": {
+        "field": "winner-country"
+      }
+    }
+  }
+}
+
+GET finals/_search
+{
+  "size": 0,
+  "aggs": {
+    "tarile cu cele mai multe finale": {
+      "terms": {
+        "field": "runner-up"
+      }
+    }
+  }
+}
+
+GET finals/_mapping
+
+
+GET finals/_search
+{
+  "size": 0,
+  "aggs": {
+    "orasele cu cele mai multe finale": {
+      "terms": {
+        "field": "final-city",
+        "size": 3
+      }
+    }
+  }
+}
